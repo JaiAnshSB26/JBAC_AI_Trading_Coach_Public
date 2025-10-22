@@ -1,0 +1,230 @@
+<div class="coach-container">
+  <!-- Header -->
+  <div class="coach-header">
+    <h1>
+      <mat-icon class="ai-icon">psychology</mat-icon>
+      AI Trading Intelligence
+    </h1>
+    <p>Coordinated AI agents for informed trading decisions</p>
+  </div>
+
+  <!-- Two Panel Layout -->
+  <div class="panels-layout">
+    
+    <!-- Left Panel: Trade Analysis (Agentic Workflow) -->
+    <div class="panel trade-analysis-panel">
+      <div class="panel-header">
+        <div class="header-content">
+          <mat-icon class="panel-icon">analytics</mat-icon>
+          <div>
+            <h2>Trade Analysis</h2>
+            <p>Present your trade idea - Our AI agents will analyze it</p>
+          </div>
+        </div>
+        <div class="agent-indicators">
+          <div class="agent-indicator" matTooltip="Planner Agent">
+            <mat-icon>route</mat-icon>
+          </div>
+          <mat-icon class="link-icon">sync_alt</mat-icon>
+          <div class="agent-indicator" matTooltip="Critic Agent">
+            <mat-icon>rate_review</mat-icon>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel-body">
+        <!-- Chat Messages -->
+        <div class="chat-messages" #tradeAnalysisChat>
+          <!-- Welcome Message -->
+          <div *ngIf="tradeMessages.length === 0" class="welcome-message">
+            <mat-icon>auto_awesome</mat-icon>
+            <h3>Present Your Trade Idea</h3>
+            <p>Our coordinated AI agents will analyze your idea:</p>
+            <ul>
+              <li><strong>Planner</strong> analyzes market data & technical indicators</li>
+              <li><strong>Critic</strong> evaluates risks & validates signals</li>
+              <li><strong>Synthesizer</strong> delivers clear, actionable recommendation</li>
+            </ul>
+            <div class="example-prompts">
+              <button mat-stroked-button (click)="useExamplePrompt('Should I buy AAPL at current price?')">
+                <mat-icon>lightbulb</mat-icon>
+                Should I buy AAPL?
+              </button>
+              <button mat-stroked-button (click)="useExamplePrompt('Analyze BTC-USD for a swing trade')">
+                <mat-icon>lightbulb</mat-icon>
+                Analyze BTC for swing trade
+              </button>
+            </div>
+          </div>
+
+          <!-- Load More Button (Top) -->
+          <div *ngIf="hasMoreTradeMessages" class="load-more-container">
+            <button mat-stroked-button class="load-more-btn" (click)="loadMoreTradeMessages()">
+              <mat-icon>expand_less</mat-icon>
+              Load Earlier Messages ({{ tradeMessages.length - tradeMessagesDisplayCount }} hidden)
+            </button>
+          </div>
+
+          <!-- Messages -->
+          <div *ngFor="let msg of displayedTradeMessages" 
+               class="message-wrapper"
+               [class.user-message]="msg.sender === 'user'"
+               [class.ai-message]="msg.sender === 'ai'">
+            
+            <div class="message-bubble">
+              <div class="message-avatar" *ngIf="msg.sender === 'ai'">
+                <mat-icon class="ai-icon">psychology</mat-icon>
+                <span class="agent-label">AI Advisor</span>
+              </div>
+
+              <div class="message-content">
+                <!-- Recommendation Badge -->
+                <div *ngIf="msg.recommendation" class="recommendation-badge" 
+                     [class.buy]="msg.recommendation === 'BUY'"
+                     [class.sell]="msg.recommendation === 'SELL'"
+                     [class.hold]="msg.recommendation === 'HOLD'"
+                     [class.wait]="msg.recommendation === 'WAIT'">
+                  <mat-icon>
+                    {{ msg.recommendation === 'BUY' ? 'trending_up' : 
+                       msg.recommendation === 'SELL' ? 'trending_down' : 
+                       msg.recommendation === 'WAIT' ? 'schedule' : 'pause_circle' }}
+                  </mat-icon>
+                  {{ msg.recommendation }}
+                </div>
+                
+                <div class="message-text" [innerHTML]="msg.text"></div>
+                <div class="message-meta">
+                  <span class="message-time">{{ msg.timestamp | date:'short' }}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Typing Indicator -->
+          <div *ngIf="tradeAnalyzing" class="typing-indicator">
+            <mat-icon class="analyzing-icon">settings</mat-icon>
+            <span>{{ analyzingStatus }}</span>
+          </div>
+        </div>
+
+        <!-- Input Area -->
+        <div class="chat-input-container">
+          <mat-form-field appearance="outline" class="chat-input">
+            <textarea matInput
+                     [(ngModel)]="tradeInput"
+                     placeholder="Describe your trade idea... (e.g., 'Should I buy NVDA at $180?' or 'Analyze ETH-USD for day trading')"
+                     rows="3"
+                     (keydown)="onTradeKeyDown($any($event))"
+                     [disabled]="tradeAnalyzing"></textarea>
+            <mat-hint>Press Enter to send, Shift+Enter for new line</mat-hint>
+          </mat-form-field>
+          <button mat-fab 
+                  color="primary" 
+                  (click)="sendTradeAnalysis()"
+                  [disabled]="!tradeInput.trim() || tradeAnalyzing">
+            <mat-icon>{{ tradeAnalyzing ? 'hourglass_empty' : 'send' }}</mat-icon>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right Panel: General Guide (Educational Q&A) -->
+    <div class="panel guide-panel">
+      <div class="panel-header">
+        <div class="header-content">
+          <mat-icon class="panel-icon">school</mat-icon>
+          <div>
+            <h2>Trading Guide</h2>
+            <p>Learn trading concepts & terminology</p>
+          </div>
+        </div>
+        <button mat-icon-button matTooltip="Clear conversation" (click)="clearGuideChat()">
+          <mat-icon>refresh</mat-icon>
+        </button>
+      </div>
+
+      <div class="panel-body">
+        <!-- Chat Messages -->
+        <div class="chat-messages" #guideChat>
+          <!-- Welcome Message -->
+          <div *ngIf="guideMessages.length === 0" class="welcome-message">
+            <mat-icon>menu_book</mat-icon>
+            <h3>Ask Me Anything</h3>
+            <p>I can help you understand:</p>
+            <ul>
+              <li>Trading terminology & concepts</li>
+              <li>Technical indicators (RSI, MACD, etc.)</li>
+              <li>Risk management strategies</li>
+              <li>Market types & trading styles</li>
+            </ul>
+            <div class="example-prompts">
+              <button mat-stroked-button (click)="useGuidePrompt('What is RSI?')">
+                <mat-icon>help</mat-icon>
+                What is RSI?
+              </button>
+              <button mat-stroked-button (click)="useGuidePrompt('Explain stop loss')">
+                <mat-icon>help</mat-icon>
+                Explain stop loss
+              </button>
+            </div>
+          </div>
+
+          <!-- Load More Button (Top) -->
+          <div *ngIf="hasMoreGuideMessages" class="load-more-container">
+            <button mat-stroked-button class="load-more-btn" (click)="loadMoreGuideMessages()">
+              <mat-icon>expand_less</mat-icon>
+              Load Earlier Messages ({{ guideMessages.length - guideMessagesDisplayCount }} hidden)
+            </button>
+          </div>
+
+          <!-- Messages -->
+          <div *ngFor="let msg of displayedGuideMessages" 
+               class="message-wrapper"
+               [class.user-message]="msg.sender === 'user'"
+               [class.guide-message]="msg.sender === 'guide'">
+            
+            <div class="message-bubble">
+              <div class="message-avatar" *ngIf="msg.sender === 'guide'">
+                <mat-icon class="guide-icon">school</mat-icon>
+              </div>
+
+              <div class="message-content">
+                <div class="message-text" [innerHTML]="msg.text"></div>
+                <div class="message-meta">
+                  <span class="message-time">{{ msg.timestamp | date:'short' }}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Typing Indicator -->
+          <div *ngIf="guideTyping" class="typing-indicator">
+            <div class="typing-dots">
+              <span></span>
+              <span></span>
+              <span></span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Input Area -->
+        <div class="chat-input-container">
+          <mat-form-field appearance="outline" class="chat-input">
+            <input matInput
+                   [(ngModel)]="guideInput"
+                   placeholder="Ask about trading concepts..."
+                   (keydown.enter)="sendGuideQuestion()"
+                   [disabled]="guideTyping">
+            <mat-hint>Educational questions only</mat-hint>
+          </mat-form-field>
+          <button mat-fab 
+                  color="accent" 
+                  (click)="sendGuideQuestion()"
+                  [disabled]="!guideInput.trim() || guideTyping">
+            <mat-icon>{{ guideTyping ? 'hourglass_empty' : 'send' }}</mat-icon>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

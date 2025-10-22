@@ -1,0 +1,223 @@
+<div class="coach-container">
+  <!-- Header Section -->
+  <div class="coach-header">
+    <div class="header-content">
+      <div class="title-section">
+        <h1>
+          <mat-icon class="ai-icon">psychology</mat-icon>
+          AI Trading Coach
+        </h1>
+        <p>Your personal AI mentor for smarter trading decisions</p>
+      </div>
+      <div class="coach-stats">
+        <div class="stat-item">
+          <mat-icon>trending_up</mat-icon>
+          <span class="stat-value">+18%</span>
+          <span class="stat-label">Improvement</span>
+        </div>
+        <div class="stat-item">
+          <mat-icon>psychology</mat-icon>
+          <span class="stat-value">247</span>
+          <span class="stat-label">Sessions</span>
+        </div>
+        <div class="stat-item">
+          <mat-icon>grade</mat-icon>
+          <span class="stat-value">89%</span>
+          <span class="stat-label">Success Rate</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="main-content">
+    <!-- Chat Section -->
+    <div class="chat-section">
+      <div class="chat-header">
+        <div class="ai-profile">
+          <div class="ai-avatar">
+            <mat-icon>smart_toy</mat-icon>
+          </div>
+          <div class="ai-info">
+            <h3>AI Coach Alpha</h3>
+            <span class="status">
+              <mat-icon class="status-dot">fiber_manual_record</mat-icon>
+              Online & Ready
+            </span>
+          </div>
+        </div>
+        <div class="chat-actions">
+          <button mat-icon-button matTooltip="Clear Chat" (click)="clearChat()">
+            <mat-icon>clear_all</mat-icon>
+          </button>
+          <button mat-icon-button matTooltip="Export Chat" (click)="exportChat()">
+            <mat-icon>download</mat-icon>
+          </button>
+        </div>
+      </div>
+
+      <div class="chat-messages" #chatContainer>
+        <div *ngFor="let msg of messages; let i = index" 
+             class="message-wrapper"
+             [class.ai-message]="msg.sender === 'ai'"
+             [class.user-message]="msg.sender === 'user'"
+             [style.animation-delay.ms]="i * 100">
+          
+          <div class="message-bubble">
+            <div *ngIf="msg.sender === 'ai'" class="message-avatar">
+              <mat-icon>smart_toy</mat-icon>
+            </div>
+            
+            <div class="message-content">
+              <div class="message-text">{{ msg.text }}</div>
+              <div class="message-meta">
+                <span class="message-time">{{ msg.timestamp | date:'short' }}</span>
+                                <mat-icon class="confidence-indicator" 
+                         [matTooltip]="'AI Confidence: ' + (msg.confidence || 0) + '%'">
+                  {{ getConfidenceIcon(msg.confidence) }}
+                </mat-icon>
+              </div>
+            </div>
+
+            <div *ngIf="msg.sender === 'user'" class="message-avatar user-avatar">
+              <mat-icon>account_circle</mat-icon>
+            </div>
+          </div>
+        </div>
+
+        <div *ngIf="isTyping" class="typing-indicator">
+          <div class="ai-avatar">
+            <mat-icon>smart_toy</mat-icon>
+          </div>
+          <div class="typing-bubble">
+            <div class="typing-dots">
+              <span></span>
+              <span></span>
+              <span></span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="chat-input-container">
+        <div class="suggestion-chips" *ngIf="!userMessage">
+          <mat-chip-set>
+            <mat-chip *ngFor="let suggestion of quickSuggestions" 
+                     (click)="selectSuggestion(suggestion)"
+                     class="suggestion-chip">
+              {{ suggestion }}
+            </mat-chip>
+          </mat-chip-set>
+        </div>
+        
+        <div class="chat-input">
+          <mat-form-field appearance="outline" class="input-field">
+            <mat-label>Ask your AI coach anything...</mat-label>
+            <textarea matInput 
+                     [(ngModel)]="userMessage" 
+                     (keydown)="handleEnterKey($event)"
+                     placeholder="e.g., 'Analyze my last trade' or 'What's the best strategy for today?'"
+                     rows="1"
+                     #messageInput></textarea>
+            <mat-icon matSuffix class="input-icon">chat</mat-icon>
+          </mat-form-field>
+          
+          <button mat-fab 
+                  color="primary" 
+                  (click)="sendMessage()"
+                  [disabled]="!userMessage.trim() || isTyping"
+                  class="send-button">
+            <mat-icon>{{ isTyping ? 'hourglass_empty' : 'send' }}</mat-icon>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Side Panel -->
+    <div class="side-panel">
+      <!-- AI Analysis -->
+      <mat-card class="analysis-card">
+        <div class="card-header">
+          <mat-icon class="header-icon">analytics</mat-icon>
+          <h3>Live Analysis</h3>
+        </div>
+        <div class="analysis-content">
+          <div class="analysis-item" *ngFor="let analysis of liveAnalysis">
+            <div class="analysis-icon" [style.color]="analysis.color">
+              <mat-icon>{{ analysis.icon }}</mat-icon>
+            </div>
+            <div class="analysis-text">
+              <h4>{{ analysis.title }}</h4>
+              <p>{{ analysis.description }}</p>
+              <div class="confidence-bar">
+                <div class="confidence-fill" [style.width.%]="analysis.confidence"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </mat-card>
+
+      <!-- Recent Insights -->
+      <mat-card class="insights-card">
+        <div class="card-header">
+          <mat-icon class="header-icon">lightbulb</mat-icon>
+          <h3>Recent Insights</h3>
+        </div>
+        <div class="insights-content">
+          <div class="insight-item" *ngFor="let insight of recentInsights">
+            <div class="insight-indicator" [class]="insight.type"></div>
+            <div class="insight-content">
+              <span class="insight-title">{{ insight.title }}</span>
+              <p class="insight-description">{{ insight.description }}</p>
+              <span class="insight-time">{{ insight.time }}</span>
+            </div>
+          </div>
+        </div>
+      </mat-card>
+
+      <!-- Performance Metrics -->
+      <mat-card class="metrics-card">
+        <div class="card-header">
+          <mat-icon class="header-icon">bar_chart</mat-icon>
+          <h3>Your Progress</h3>
+        </div>
+        <div class="metrics-content">
+          <div class="metric-item" *ngFor="let metric of performanceMetrics">
+            <div class="metric-label">{{ metric.label }}</div>
+            <div class="metric-value" [style.color]="metric.color">{{ metric.value }}</div>
+            <div class="metric-change" [class.positive]="metric.change > 0" [class.negative]="metric.change < 0">
+              <mat-icon>{{ metric.change > 0 ? 'trending_up' : 'trending_down' }}</mat-icon>
+              {{ Math.abs(metric.change) }}%
+            </div>
+          </div>
+        </div>
+      </mat-card>
+
+      <!-- Quick Actions -->
+      <mat-card class="actions-card">
+        <div class="card-header">
+          <mat-icon class="header-icon">flash_on</mat-icon>
+          <h3>Quick Actions</h3>
+        </div>
+        <div class="actions-content">
+          <button mat-stroked-button class="action-btn" (click)="generateReport()">
+            <mat-icon>assessment</mat-icon>
+            Generate Report
+          </button>
+          <button mat-stroked-button class="action-btn" (click)="analyzePortfolio()">
+            <mat-icon>pie_chart</mat-icon>
+            Analyze Portfolio
+          </button>
+          <button mat-stroked-button class="action-btn" (click)="getMarketInsights()">
+            <mat-icon>insights</mat-icon>
+            Market Insights
+          </button>
+          <button mat-stroked-button class="action-btn" (click)="scheduleSession()">
+            <mat-icon>schedule</mat-icon>
+            Schedule Session
+          </button>
+        </div>
+      </mat-card>
+    </div>
+  </div>
+</div>
+

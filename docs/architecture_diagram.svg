@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="1400" height="900" viewBox="0 0 1400 900" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L10,3.5 L0,7 Z" fill="#1f2937" />
+    </marker>
+  </defs>
+
+  <!-- Title -->
+  <text x="700" y="40" font-family="Arial, sans-serif" font-size="24" font-weight="bold" text-anchor="middle" fill="#1f2937">
+    JBAC AI Trading Coach - Architecture Diagram
+  </text>
+
+  <!-- User Browser -->
+  <rect x="50" y="100" width="200" height="100" fill="#e5f3ff" stroke="#2563eb" stroke-width="2" rx="8"/>
+  <text x="60" y="125" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#1f2937">User Browser</text>
+  <text x="60" y="145" font-family="Arial, sans-serif" font-size="12" fill="#4b5563">• Angular 17 SPA</text>
+  <text x="60" y="165" font-family="Arial, sans-serif" font-size="12" fill="#4b5563">• Tailwind CSS</text>
+  <text x="60" y="185" font-family="Arial, sans-serif" font-size="12" fill="#4b5563">• Google OAuth</text>
+
+  <!-- DNS/Domain -->
+  <rect x="350" y="120" width="200" height="60" fill="#f0f9ff" stroke="#0ea5e9" stroke-width="2" rx="8"/>
+  <text x="360" y="145" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#1f2937">trading.jbac.dev</text>
+  <text x="360" y="165" font-family="Arial, sans-serif" font-size="12" fill="#4b5563">DNS + Let's Encrypt TLS</text>
+
+  <!-- EC2 + Nginx -->
+  <rect x="650" y="100" width="250" height="100" fill="#fef3c7" stroke="#f59e0b" stroke-width="2" rx="8"/>
+  <text x="660" y="125" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#1f2937">EC2 (Ubuntu 22.04)</text>
+  <text x="660" y="145" font-family="Arial, sans-serif" font-size="12" fill="#4b5563">• Nginx (reverse proxy)</text>
+  <text x="660" y="165" font-family="Arial, sans-serif" font-size="12" fill="#4b5563">• Static Angular files</text>
+  <text x="660" y="185" font-family="Arial, sans-serif" font-size="12" fill="#4b5563">• /api/ → FastAPI</text>
+
+  <!-- FastAPI Backend -->
+  <rect x="650" y="250" width="250" height="120" fill="#dcfce7" stroke="#16a34a" stroke-width="2" rx="8"/>
+  <text x="660" y="275" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#1f2937">FastAPI Backend</text>
+  <text x="660" y="295" font-family="Arial, sans-serif" font-size="12" fill="#4b5563">• Python 3.11 + Uvicorn</text>
+  <text x="660" y="315" font-family="Arial, sans-serif" font-size="12" fill="#4b5563">• systemd service</text>
+  <text x="660" y="335" font-family="Arial, sans-serif" font-size="12" fill="#4b5563">• /api/coach, /api/plan</text>
+  <text x="660" y="355" font-family="Arial, sans-serif" font-size="12" fill="#4b5563">• Portfolio & Trade mgmt</text>
+
+  <!-- Market Data -->
+  <rect x="350" y="280" width="200" height="80" fill="#fef2f2" stroke="#ef4444" stroke-width="2" rx="8"/>
+  <text x="360" y="305" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#1f2937">Market Data</text>
+  <text x="360" y="325" font-family="Arial, sans-serif" font-size="12" fill="#4b5563">• yfinance API</text>
+  <text x="360" y="345" font-family="Arial, sans-serif" font-size="12" fill="#4b5563">• pandas + TA indicators</text>
+
+  <!-- DynamoDB -->
+  <rect x="1000" y="250" width="200" height="80" fill="#e0e7ff" stroke="#6366f1" stroke-width="2" rx="8"/>
+  <text x="1010" y="275" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#1f2937">DynamoDB</text>
+  <text x="1010" y="295" font-family="Arial, sans-serif" font-size="12" fill="#4b5563">• Users table</text>
+  <text x="1010" y="315" font-family="Arial, sans-serif" font-size="12" fill="#4b5563">• Portfolios + Trades</text>
+
+  <!-- Lambda Functions -->
+  <rect x="1000" y="400" width="250" height="100" fill="#fdf4ff" stroke="#a855f7" stroke-width="2" rx="8"/>
+  <text x="1010" y="425" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#1f2937">AWS Lambda</text>
+  <text x="1010" y="445" font-family="Arial, sans-serif" font-size="12" fill="#4b5563">• jbac-llm-agents</text>
+  <text x="1010" y="465" font-family="Arial, sans-serif" font-size="12" fill="#4b5563">• jbac-market-data</text>
+  <text x="1010" y="485" font-family="Arial, sans-serif" font-size="12" fill="#4b5563">• Agent orchestration</text>
+
+  <!-- Bedrock -->
+  <rect x="650" y="450" width="250" height="120" fill="#fff7ed" stroke="#ea580c" stroke-width="2" rx="8"/>
+  <text x="660" y="475" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#1f2937">Amazon Bedrock</text>
+  <text x="660" y="495" font-family="Arial, sans-serif" font-size="12" fill="#4b5563">• Claude 3.5 Sonnet</text>
+  <text x="660" y="515" font-family="Arial, sans-serif" font-size="12" fill="#4b5563">• Amazon Nova Micro</text>
+  <text x="660" y="535" font-family="Arial, sans-serif" font-size="12" fill="#4b5563">• LLM reasoning/analysis</text>
+  <text x="660" y="555" font-family="Arial, sans-serif" font-size="12" fill="#4b5563">• Trading advice generation</text>
+
+  <!-- CloudWatch -->
+  <rect x="350" y="450" width="200" height="80" fill="#f0fdf4" stroke="#22c55e" stroke-width="2" rx="8"/>
+  <text x="360" y="475" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#1f2937">Monitoring</text>
+  <text x="360" y="495" font-family="Arial, sans-serif" font-size="12" fill="#4b5563">• CloudWatch Logs</text>
+  <text x="360" y="515" font-family="Arial, sans-serif" font-size="12" fill="#4b5563">• systemd journalctl</text>
+
+  <!-- Arrows -->
+  <path d="M250 150 L350 150" stroke="#1f2937" stroke-width="2" fill="none" marker-end="url(#arrowhead)"/>
+  <path d="M550 150 L650 150" stroke="#1f2937" stroke-width="2" fill="none" marker-end="url(#arrowhead)"/>
+  <path d="M775 200 L775 250" stroke="#1f2937" stroke-width="2" fill="none" marker-end="url(#arrowhead)"/>
+  <path d="M900 310 L1000 290" stroke="#1f2937" stroke-width="2" fill="none" marker-end="url(#arrowhead)"/>
+  <path d="M900 350 L1000 420" stroke="#1f2937" stroke-width="2" fill="none" marker-end="url(#arrowhead)"/>
+  <path d="M1000 450 L900 510" stroke="#1f2937" stroke-width="2" fill="none" marker-end="url(#arrowhead)"/>
+  <path d="M550 320 L650 320" stroke="#1f2937" stroke-width="2" fill="none" marker-end="url(#arrowhead)"/>
+  <path d="M650 400 L550 480" stroke="#1f2937" stroke-width="2" fill="none" marker-end="url(#arrowhead)"/>
+
+  <!-- Labels -->
+  <text x="300" y="140" font-family="Arial, sans-serif" font-size="10" fill="#6b7280">HTTPS</text>
+  <text x="600" y="140" font-family="Arial, sans-serif" font-size="10" fill="#6b7280">TLS</text>
+  <text x="795" y="230" font-family="Arial, sans-serif" font-size="10" fill="#6b7280">API calls</text>
+  <text x="930" y="300" font-family="Arial, sans-serif" font-size="10" fill="#6b7280">Store data</text>
+  <text x="930" y="390" font-family="Arial, sans-serif" font-size="10" fill="#6b7280">Invoke</text>
+  <text x="930" y="530" font-family="Arial, sans-serif" font-size="10" fill="#6b7280">LLM calls</text>
+  <text x="580" y="310" font-family="Arial, sans-serif" font-size="10" fill="#6b7280">Market data</text>
+  <text x="580" y="470" font-family="Arial, sans-serif" font-size="10" fill="#6b7280">Logs</text>
+
+  <!-- Flow description -->
+  <text x="700" y="620" font-family="Arial, sans-serif" font-size="14" font-weight="bold" text-anchor="middle" fill="#1f2937">
+    Data Flow: User → Domain/TLS → Nginx → FastAPI → (DynamoDB + Lambda → Bedrock LLM)
+  </text>
+</svg>

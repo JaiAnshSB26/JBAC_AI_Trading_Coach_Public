@@ -1,0 +1,150 @@
+<div class="market-container">
+  <div class="market-header">
+    <h1 class="market-title">
+      <mat-icon class="title-icon">trending_up</mat-icon>
+      Market Overview
+    </h1>
+    <button mat-raised-button color="primary" class="refresh-btn" (click)="refreshData()" [disabled]="loading">
+      <mat-icon>refresh</mat-icon>
+      {{ loading ? 'Refreshing...' : 'Refresh Data' }}
+    </button>
+  </div>
+
+  <!-- Market Stats Cards -->
+  <div class="stats-grid">
+    <mat-card class="stat-card market-cap">
+      <div class="stat-icon">
+        <mat-icon>account_balance</mat-icon>
+      </div>
+      <div class="stat-content">
+        <h3>Market Cap</h3>
+        <p class="stat-value">$2.8T</p>
+        <span class="stat-change positive">+3.2%</span>
+      </div>
+    </mat-card>
+
+    <mat-card class="stat-card volume">
+      <div class="stat-icon">
+        <mat-icon>bar_chart</mat-icon>
+      </div>
+      <div class="stat-content">
+        <h3>24h Volume</h3>
+        <p class="stat-value">$95.4B</p>
+        <span class="stat-change positive">+12.8%</span>
+      </div>
+    </mat-card>
+
+    <mat-card class="stat-card dominance">
+      <div class="stat-icon">
+        <mat-icon>pie_chart</mat-icon>
+      </div>
+      <div class="stat-content">
+        <h3>BTC Dominance</h3>
+        <p class="stat-value">54.3%</p>
+        <span class="stat-change negative">-0.8%</span>
+      </div>
+    </mat-card>
+
+    <mat-card class="stat-card fear-greed">
+      <div class="stat-icon">
+        <mat-icon>psychology</mat-icon>
+      </div>
+      <div class="stat-content">
+        <h3>Fear & Greed</h3>
+        <p class="stat-value">76</p>
+        <span class="stat-label">Extreme Greed</span>
+      </div>
+    </mat-card>
+  </div>
+
+  <!-- Market Highlights -->
+  <div class="section">
+    <h2 class="section-title">
+      <mat-icon>star</mat-icon>
+      Top Performers
+    </h2>
+    <div class="market-grid">
+      <mat-card *ngFor="let item of marketHighlights; let i = index" 
+                class="market-card" 
+                [class.positive]="item.change.includes('+')"
+                [class.negative]="item.change.includes('-')"
+                [style.animation-delay.ms]="i * 100">
+        <div class="card-header">
+          <div class="asset-info">
+            <mat-icon [style.color]="item.color" class="asset-icon">{{ item.icon }}</mat-icon>
+            <div>
+              <h3 class="symbol">{{ item.symbol }}</h3>
+              <p class="asset-name">{{ item.name }}</p>
+            </div>
+          </div>
+          <button mat-icon-button class="favorite-btn">
+            <mat-icon>favorite_border</mat-icon>
+          </button>
+        </div>
+        
+        <div class="price-section">
+          <p class="current-price">${{ item.price }}</p>
+          <div class="change-info">
+            <span class="change-value" [style.color]="item.color">{{ item.change }}</span>
+            <mat-icon class="trend-icon" [style.color]="item.color">
+              {{ item.change.includes('+') ? 'trending_up' : 'trending_down' }}
+            </mat-icon>
+          </div>
+        </div>
+
+        <div class="mini-chart">
+          <div class="chart-placeholder" [style.background]="item.chartGradient">
+            <span class="chart-text">7d chart</span>
+          </div>
+        </div>
+      </mat-card>
+    </div>
+  </div>
+
+  <!-- AI Insights Section -->
+  <div class="section">
+    <h2 class="section-title">
+      <mat-icon>smart_toy</mat-icon>
+      AI Market Insights
+    </h2>
+    <div class="insights-container">
+      <mat-card class="insights-card">
+        <div class="insights-header">
+          <mat-icon class="ai-icon">psychology</mat-icon>
+          <h3>Market Intelligence</h3>
+          <mat-chip-set>
+            <mat-chip color="accent" selected>Real-time</mat-chip>
+          </mat-chip-set>
+        </div>
+        
+        <div class="insights-content">
+          <div *ngFor="let insight of aiInsights; let i = index" 
+               class="insight-item"
+               [style.animation-delay.ms]="i * 200">
+            <div class="insight-icon">
+              <mat-icon [style.color]="insight.color">{{ insight.icon }}</mat-icon>
+            </div>
+            <div class="insight-text">
+              <h4>{{ insight.title }}</h4>
+              <p>{{ insight.description }}</p>
+            </div>
+            <div class="insight-confidence">
+              <span class="confidence-label">Confidence</span>
+              <div class="confidence-bar">
+                <div class="confidence-fill" [style.width.%]="insight.confidence"></div>
+              </div>
+              <span class="confidence-value">{{ insight.confidence }}%</span>
+            </div>
+          </div>
+        </div>
+      </mat-card>
+    </div>
+  </div>
+
+  <!-- Loading Spinner -->
+  <div *ngIf="loading" class="loading-overlay">
+    <mat-spinner diameter="60"></mat-spinner>
+    <p>Updating market data...</p>
+  </div>
+</div>
+

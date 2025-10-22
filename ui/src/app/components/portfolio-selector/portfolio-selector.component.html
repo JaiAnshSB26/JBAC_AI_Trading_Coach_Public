@@ -1,0 +1,114 @@
+<div class="portfolio-selector">
+  <div class="header">
+    <h2>Your Portfolios</h2>
+    <button class="create-btn" (click)="showCreateForm = true" *ngIf="!showCreateForm">
+      <span>+ New Portfolio</span>
+    </button>
+  </div>
+
+  <!-- Loading State -->
+  <div *ngIf="loading" class="loading">
+    <div class="spinner"></div>
+    <p>Loading portfolios...</p>
+  </div>
+
+  <!-- Create Portfolio Form -->
+  <div *ngIf="showCreateForm" class="create-form">
+    <h3>Create New Portfolio</h3>
+    
+    <div class="form-group">
+      <label>Portfolio Name</label>
+      <input
+        type="text"
+        [(ngModel)]="newPortfolioName"
+        placeholder="e.g., Growth Portfolio, Dividend Portfolio"
+        maxlength="50"
+      />
+    </div>
+
+    <div class="form-group">
+      <label>Starting Balance</label>
+      <input
+        type="number"
+        [(ngModel)]="newPortfolioAmount"
+        placeholder="10000"
+        min="100"
+        step="100"
+      />
+    </div>
+
+    <div class="form-group">
+      <label>Track Symbols (comma-separated)</label>
+      <input
+        type="text"
+        [(ngModel)]="newPortfolioSymbols"
+        placeholder="AAPL,TSLA,NVDA,MSFT"
+      />
+      <small>These symbols will appear on your market dashboard</small>
+    </div>
+
+    <div class="form-actions">
+      <button class="cancel-btn" (click)="cancelCreate()">Cancel</button>
+      <button class="submit-btn" (click)="createPortfolio()">Create Portfolio</button>
+    </div>
+  </div>
+
+  <!-- Portfolio Cards -->
+  <div *ngIf="!loading && !showCreateForm" class="portfolios-grid">
+    <div
+      *ngFor="let portfolio of portfolios"
+      class="portfolio-card"
+      [class.active]="activePortfolio?.portfolio_id === portfolio.portfolio_id"
+      (click)="selectPortfolio(portfolio)"
+    >
+      <div class="portfolio-header">
+        <h3>{{ portfolio.portfolio_name }}</h3>
+        <button
+          class="delete-btn"
+          (click)="deletePortfolio(portfolio, $event)"
+          title="Delete portfolio"
+        >
+          ×
+        </button>
+      </div>
+
+      <div class="portfolio-stats">
+        <div class="stat">
+          <label>Total Value</label>
+          <span class="value">{{ formatCurrency(portfolio.total_value || 0) }}</span>
+        </div>
+        
+        <div class="stat">
+          <label>Cash Balance</label>
+          <span class="value">{{ formatCurrency(portfolio.current_balance || 0) }}</span>
+        </div>
+
+        <div class="stat">
+          <label>Positions</label>
+          <span class="value">{{ portfolio.positions?.length || 0 }}</span>
+        </div>
+      </div>
+
+      <div *ngIf="portfolio.tracked_symbols && portfolio.tracked_symbols.length > 0" class="tracked-symbols">
+        <label>Tracking:</label>
+        <div class="symbols">
+          <span *ngFor="let symbol of portfolio.tracked_symbols" class="symbol-tag">{{ symbol }}</span>
+        </div>
+      </div>
+
+      <div *ngIf="activePortfolio?.portfolio_id === portfolio.portfolio_id" class="active-badge">
+        ✓ Active
+      </div>
+    </div>
+
+    <!-- Empty State -->
+    <div *ngIf="portfolios.length === 0" class="empty-state">
+      <div class="icon">📊</div>
+      <h3>No Portfolios Yet</h3>
+      <p>Create your first portfolio to start paper trading!</p>
+      <button class="create-btn-large" (click)="showCreateForm = true">
+        Create Portfolio
+      </button>
+    </div>
+  </div>
+</div>

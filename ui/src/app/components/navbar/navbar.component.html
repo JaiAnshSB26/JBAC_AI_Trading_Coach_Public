@@ -1,0 +1,243 @@
+<mat-toolbar class="navbar">
+  <!-- Left Section -->
+  <div class="navbar-left">
+    <div class="logo-container">
+      <mat-icon class="logo-icon">trending_up</mat-icon>
+      <span class="logo">AI Trading Coach</span>
+    </div>
+  </div>
+
+  <!-- Center Navigation Links -->
+  <div class="navbar-center">
+    <nav class="navbar-links">
+      <button mat-button class="nav-btn" routerLink="/dashboard" routerLinkActive="active-link">
+        <mat-icon>dashboard</mat-icon>
+        <span>Dashboard</span>
+      </button>
+      <button mat-button class="nav-btn" routerLink="/market" routerLinkActive="active-link">
+        <mat-icon>trending_up</mat-icon>
+        <span>Market</span>
+      </button>
+      <button mat-button class="nav-btn" routerLink="/coach" routerLinkActive="active-link">
+        <mat-icon>psychology</mat-icon>
+        <span>Coach</span>
+      </button>
+      <button mat-button class="nav-btn" routerLink="/trades" routerLinkActive="active-link">
+        <mat-icon>swap_horiz</mat-icon>
+        <span>Trades</span>
+      </button>
+    </nav>
+  </div>
+
+  <!-- Right Section -->
+  <div class="navbar-right">
+    <!-- Settings Menu -->
+    <button mat-icon-button 
+            class="settings-btn" 
+            [matMenuTriggerFor]="settingsMenu"
+            matTooltip="Settings">
+      <mat-icon>settings</mat-icon>
+    </button>
+
+    <!-- Notifications -->
+    <button mat-icon-button 
+            class="notifications-btn"
+            [matMenuTriggerFor]="notificationsMenu"
+            matTooltip="Notifications">
+      <mat-icon [matBadge]="notificationCount" 
+                [matBadgeHidden]="notificationCount === 0"
+                matBadgeColor="accent">notifications</mat-icon>
+    </button>
+
+    <!-- User Profile/Login -->
+    <button mat-raised-button 
+            class="login-btn" 
+            [matMenuTriggerFor]="userMenu"
+            *ngIf="!isLoggedIn">
+      <mat-icon>account_circle</mat-icon>
+      <span>Login</span>
+    </button>
+
+    <button mat-button 
+            class="user-profile-btn" 
+            [matMenuTriggerFor]="userMenu"
+            *ngIf="isLoggedIn">
+      <div class="user-avatar-icon">
+        <mat-icon>account_circle</mat-icon>
+      </div>
+      <span class="user-name">{{ userName }}</span>
+      <mat-icon class="dropdown-icon">keyboard_arrow_down</mat-icon>
+    </button>
+
+    <!-- Mobile Menu Toggle -->
+    <button mat-icon-button 
+            class="mobile-menu-btn" 
+            (click)="toggleMobileMenu()"
+            matTooltip="Menu">
+      <mat-icon>{{ isMobileMenuOpen ? 'close' : 'menu' }}</mat-icon>
+    </button>
+  </div>
+</mat-toolbar>
+
+<!-- Settings Menu -->
+<mat-menu #settingsMenu="matMenu" class="settings-menu">
+  <div class="menu-header">
+    <mat-icon class="settings-icon">settings</mat-icon>
+    <h3>Settings</h3>
+    <p>Customize your trading experience</p>
+  </div>
+  <mat-divider></mat-divider>
+  <div class="settings-categories">
+    <div class="category-section">
+      <h4 class="category-title">
+        <mat-icon>palette</mat-icon>
+        Appearance
+      </h4>
+      <button mat-menu-item (click)="openThemeSettings()">
+        <mat-icon>brightness_6</mat-icon>
+        <span>Theme Settings</span>
+        <mat-icon class="arrow-icon">chevron_right</mat-icon>
+      </button>
+    </div>
+    
+    <div class="category-section">
+      <h4 class="category-title">
+        <mat-icon>notifications</mat-icon>
+        Notifications
+      </h4>
+      <button mat-menu-item (click)="openNotificationSettings()">
+        <mat-icon>notification_important</mat-icon>
+        <span>Alert Preferences</span>
+        <mat-icon class="arrow-icon">chevron_right</mat-icon>
+      </button>
+    </div>
+    
+    <div class="category-section">
+      <h4 class="category-title">
+        <mat-icon>trending_up</mat-icon>
+        Trading
+      </h4>
+      <button mat-menu-item (click)="openTradingSettings()">
+        <mat-icon>tune</mat-icon>
+        <span>Risk Management</span>
+        <mat-icon class="arrow-icon">chevron_right</mat-icon>
+      </button>
+    </div>
+    
+    <mat-divider></mat-divider>
+    <button mat-menu-item (click)="openPreferences()" class="general-settings">
+      <mat-icon>settings_applications</mat-icon>
+      <span>General Preferences</span>
+      <mat-icon class="arrow-icon">chevron_right</mat-icon>
+    </button>
+  </div>
+</mat-menu>
+
+<!-- Notifications Menu -->
+<mat-menu #notificationsMenu="matMenu" class="notifications-menu">
+  <div class="notifications-header">
+    <h3>Notifications</h3>
+    <button mat-icon-button (click)="markAllAsRead()" matTooltip="Mark all as read">
+      <mat-icon>done_all</mat-icon>
+    </button>
+  </div>
+  <mat-divider></mat-divider>
+  <div class="notifications-list">
+    <div *ngFor="let notification of notifications" class="notification-item" [class.unread]="!notification.read">
+      <mat-icon [style.color]="notification.color">{{ notification.icon }}</mat-icon>
+      <div class="notification-content">
+        <p class="notification-title">{{ notification.title }}</p>
+        <p class="notification-time">{{ notification.time }}</p>
+      </div>
+    </div>
+    <div *ngIf="notifications.length === 0" class="no-notifications">
+      <mat-icon>notifications_none</mat-icon>
+      <p>No new notifications</p>
+    </div>
+  </div>
+</mat-menu>
+
+<!-- User Menu -->
+<mat-menu #userMenu="matMenu" class="user-menu">
+  <div *ngIf="!isLoggedIn" class="login-menu">
+    <div class="menu-header">
+      <mat-icon class="welcome-icon">waving_hand</mat-icon>
+      <h3>Welcome to AI Trading Coach</h3>
+      <p>Join thousands of successful traders</p>
+    </div>
+    <div class="menu-actions">
+      <button mat-raised-button color="primary" class="menu-login-btn" (click)="login()">
+        <mat-icon>login</mat-icon>
+        <span>Sign In</span>
+      </button>
+      <button mat-stroked-button class="menu-register-btn" (click)="register()">
+        <mat-icon>person_add</mat-icon>
+        <span>Create Account</span>
+      </button>
+    </div>
+    <div class="menu-footer">
+      <small>Start your AI-powered trading journey today</small>
+    </div>
+  </div>
+  
+  <div *ngIf="isLoggedIn" class="user-profile-menu">
+    <div class="user-info">
+      <div class="user-avatar-large">
+        <mat-icon>account_circle</mat-icon>
+      </div>
+      <div class="user-details">
+        <p class="user-name">{{ userName }}</p>
+        <p class="user-email">{{ userEmail }}</p>
+        <span class="user-status">
+          <mat-icon class="status-icon">fiber_manual_record</mat-icon>
+          Online
+        </span>
+      </div>
+    </div>
+    <mat-divider></mat-divider>
+    <div class="menu-items">
+      <button mat-menu-item (click)="viewProfile()">
+        <mat-icon>person</mat-icon>
+        <span>My Profile</span>
+      </button>
+      <button mat-menu-item (click)="viewPortfolio()">
+        <mat-icon>account_balance_wallet</mat-icon>
+        <span>Portfolio</span>
+      </button>
+      <button mat-menu-item (click)="viewSettings()">
+        <mat-icon>settings</mat-icon>
+        <span>Account Settings</span>
+      </button>
+      <mat-divider></mat-divider>
+      <button mat-menu-item class="logout-item" (click)="logout()">
+        <mat-icon>logout</mat-icon>
+        <span>Sign Out</span>
+      </button>
+    </div>
+  </div>
+</mat-menu>
+
+<!-- Mobile Menu -->
+<div class="mobile-menu" [class.open]="isMobileMenuOpen">
+  <nav class="mobile-nav">
+    <button mat-button class="mobile-nav-btn" routerLink="/dashboard" (click)="closeMobileMenu()">
+      <mat-icon>dashboard</mat-icon>
+      <span>Dashboard</span>
+    </button>
+    <button mat-button class="mobile-nav-btn" routerLink="/market" (click)="closeMobileMenu()">
+      <mat-icon>trending_up</mat-icon>
+      <span>Market</span>
+    </button>
+    <button mat-button class="mobile-nav-btn" routerLink="/coach" (click)="closeMobileMenu()">
+      <mat-icon>psychology</mat-icon>
+      <span>Coach</span>
+    </button>
+    <button mat-button class="mobile-nav-btn" routerLink="/trades" (click)="closeMobileMenu()">
+      <mat-icon>swap_horiz</mat-icon>
+      <span>Trades</span>
+    </button>
+  </nav>
+</div>
+
+
+

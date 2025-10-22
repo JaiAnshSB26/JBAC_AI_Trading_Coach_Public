@@ -1,0 +1,382 @@
+<div class="trades-container">
+  <!-- Header Section -->
+  <div class="trades-header">
+    <div class="header-content">
+      <div class="title-section">
+        <h1>
+          <mat-icon class="trade-icon">trending_up</mat-icon>
+          Paper Trading
+        </h1>
+        <p>Practice trading with real-time market data and track your performance</p>
+      </div>
+      
+      <div class="portfolio-summary">
+        <div class="summary-card">
+          <mat-icon>account_balance_wallet</mat-icon>
+          <div class="summary-info">
+            <span class="summary-value">${{ portfolioValue | number:'1.2-2' }}</span>
+            <span class="summary-label">Portfolio Value</span>
+          </div>
+        </div>
+        <div class="summary-card">
+          <mat-icon>trending_up</mat-icon>
+          <div class="summary-info">
+            <span class="summary-value" [ngClass]="totalPnL >= 0 ? 'positive' : 'negative'">
+              {{ totalPnL >= 0 ? '+' : '' }}${{ totalPnL | number:'1.2-2' }}
+            </span>
+            <span class="summary-label">Total P&L</span>
+          </div>
+        </div>
+        <div class="summary-card">
+          <mat-icon>show_chart</mat-icon>
+          <div class="summary-info">
+            <span class="summary-value" [ngClass]="dailyPnL >= 0 ? 'positive' : 'negative'">
+              {{ dailyPnL >= 0 ? '+' : '' }}${{ dailyPnL | number:'1.2-2' }}
+            </span>
+            <span class="summary-label">Today's P&L</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <div class="main-content">
+    <!-- Trading Panel -->
+    <div class="trading-section">
+      <mat-card class="trade-form">
+        <div class="card-header">
+          <mat-icon class="header-icon">add_chart</mat-icon>
+          <h3>Execute Trade</h3>
+          <div class="market-status">
+            <span class="status-dot"></span>
+            Market Open
+          </div>
+        </div>
+
+        <div class="form-content">
+          <!-- Symbol Search -->
+          <mat-form-field appearance="outline" class="symbol-field">
+            <mat-label>Symbol</mat-label>
+            <input matInput 
+                   placeholder="Search stocks, crypto, forex..."
+                   [(ngModel)]="trade.symbol"
+                   (input)="onSymbolSearch($event)"
+                   #symbolInput>
+            <mat-icon matSuffix>search</mat-icon>
+          </mat-form-field>
+
+          <!-- Symbol Suggestions -->
+          <div class="symbol-suggestions" *ngIf="symbolSuggestions.length > 0">
+            <mat-chip-set>
+              <mat-chip *ngFor="let suggestion of symbolSuggestions"
+                       (click)="selectSymbol(suggestion)"
+                       class="suggestion-chip">
+                {{ suggestion.symbol }} - {{ suggestion.name }}
+              </mat-chip>
+            </mat-chip-set>
+          </div>
+
+          <!-- Current Price Display -->
+          <div class="price-display" *ngIf="currentPrice">
+            <div class="price-info">
+              <span class="current-price">${{ currentPrice.price | number:'1.2-2' }}</span>
+              <span class="price-change" [ngClass]="currentPrice.change >= 0 ? 'positive' : 'negative'">
+                {{ currentPrice.change >= 0 ? '+' : '' }}{{ currentPrice.change | number:'1.2-2' }}
+                ({{ currentPrice.changePercent | number:'1.2-2' }}%)
+              </span>
+            </div>
+            <div class="price-meta">
+              <span>Last updated: {{ currentPrice.lastUpdate | date:'short' }}</span>
+            </div>
+          </div>
+
+          <!-- Trade Type Selection -->
+          <div class="trade-type-section">
+            <label class="section-label">Order Type</label>
+            <mat-button-toggle-group [(ngModel)]="trade.orderType" class="order-type-group">
+              <mat-button-toggle value="market">Market</mat-button-toggle>
+              <mat-button-toggle value="limit">Limit</mat-button-toggle>
+              <mat-button-toggle value="stop">Stop Loss</mat-button-toggle>
+            </mat-button-toggle-group>
+          </div>
+
+          <!-- Buy/Sell Buttons -->
+          <div class="action-buttons">
+            <button mat-raised-button 
+                   class="buy-button"
+                   [class.active]="trade.side === 'buy'"
+                   (click)="trade.side = 'buy'">
+              <mat-icon>trending_up</mat-icon>
+              BUY
+            </button>
+            <button mat-raised-button 
+                   class="sell-button"
+                   [class.active]="trade.side === 'sell'"
+                   (click)="trade.side = 'sell'">
+              <mat-icon>trending_down</mat-icon>
+              SELL
+            </button>
+          </div>
+
+          <!-- Quantity and Price -->
+          <div class="input-row">
+            <mat-form-field appearance="outline">
+              <mat-label>Quantity</mat-label>
+              <input matInput 
+                     type="number" 
+                     [(ngModel)]="trade.quantity"
+                     (input)="calculateTotal()">
+              <span matSuffix>shares</span>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" *ngIf="trade.orderType !== 'market'">
+              <mat-label>{{ trade.orderType === 'limit' ? 'Limit Price' : 'Stop Price' }}</mat-label>
+              <input matInput 
+                     type="number" 
+                     step="0.01"
+                     [(ngModel)]="trade.price"
+                     (input)="calculateTotal()">
+              <span matPrefix>$</span>
+            </mat-form-field>
+          </div>
+
+          <!-- Order Summary -->
+          <div class="order-summary">
+            <div class="summary-row">
+              <span>Estimated Total:</span>
+              <span class="total-amount">${{ estimatedTotal | number:'1.2-2' }}</span>
+            </div>
+            <div class="summary-row">
+              <span>Available Balance:</span>
+              <span>${{ availableBalance | number:'1.2-2' }}</span>
+            </div>
+            <div class="summary-row" *ngIf="trade.side === 'buy'">
+              <span>Buying Power:</span>
+              <span [ngClass]="estimatedTotal <= availableBalance ? 'positive' : 'negative'">
+                {{ estimatedTotal <= availableBalance ? 'Sufficient' : 'Insufficient' }}
+              </span>
+            </div>
+          </div>
+
+          <!-- Execute Button -->
+          <button mat-raised-button 
+                 class="execute-button"
+                 [disabled]="!canExecuteTrade()"
+                 (click)="executeTrade()">
+            <mat-icon>send</mat-icon>
+            Execute {{ trade.side | uppercase }} Order
+          </button>
+        </div>
+      </mat-card>
+
+      <!-- Quick Actions -->
+      <mat-card class="quick-actions">
+        <div class="card-header">
+          <mat-icon class="header-icon">flash_on</mat-icon>
+          <h3>Quick Actions</h3>
+        </div>
+        
+        <div class="actions-grid">
+          <button mat-stroked-button class="action-btn" (click)="closeAllPositions()">
+            <mat-icon>clear_all</mat-icon>
+            Close All Positions
+          </button>
+          <button mat-stroked-button class="action-btn" (click)="setStopLoss()">
+            <mat-icon>shield</mat-icon>
+            Set Stop Loss
+          </button>
+          <button mat-stroked-button class="action-btn" (click)="viewAnalytics()">
+            <mat-icon>analytics</mat-icon>
+            View Analytics
+          </button>
+          <button mat-stroked-button class="action-btn" (click)="exportTrades()">
+            <mat-icon>download</mat-icon>
+            Export Trades
+          </button>
+        </div>
+      </mat-card>
+    </div>
+
+    <!-- Data Section -->
+    <div class="data-section">
+      <!-- Current Positions -->
+      <mat-card class="positions-card">
+        <div class="card-header">
+          <mat-icon class="header-icon">account_balance</mat-icon>
+          <h3>Open Positions</h3>
+          <mat-chip class="position-count">{{ openPositions.length }}</mat-chip>
+        </div>
+
+        <div class="positions-content" *ngIf="openPositions.length > 0; else noPositions">
+          <div class="position-item" *ngFor="let position of openPositions">
+            <div class="position-header">
+              <div class="symbol-info">
+                <span class="symbol">{{ position.symbol }}</span>
+                <span class="shares">{{ position.quantity }} shares</span>
+              </div>
+              <div class="position-value">
+                <span class="current-value">${{ position.currentValue | number:'1.2-2' }}</span>
+                <span class="pnl" [ngClass]="position.pnl >= 0 ? 'positive' : 'negative'">
+                  {{ position.pnl >= 0 ? '+' : '' }}${{ position.pnl | number:'1.2-2' }}
+                </span>
+              </div>
+            </div>
+            <div class="position-details">
+              <div class="detail-item">
+                <span class="label">Avg Cost:</span>
+                <span>${{ position.avgCost | number:'1.2-2' }}</span>
+              </div>
+              <div class="detail-item">
+                <span class="label">Current Price:</span>
+                <span>${{ position.currentPrice | number:'1.2-2' }}</span>
+              </div>
+              <div class="detail-item">
+                <span class="label">% Change:</span>
+                <span [ngClass]="position.percentChange >= 0 ? 'positive' : 'negative'">
+                  {{ position.percentChange | number:'1.2-2' }}%
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <ng-template #noPositions>
+          <div class="empty-state">
+            <mat-icon>trending_flat</mat-icon>
+            <p>No open positions</p>
+            <span>Execute your first trade to see positions here</span>
+          </div>
+        </ng-template>
+      </mat-card>
+
+      <!-- Trade History -->
+      <mat-card class="history-card">
+        <div class="card-header">
+          <mat-icon class="header-icon">history</mat-icon>
+          <h3>Trade History</h3>
+          <div class="header-actions">
+            <mat-form-field appearance="outline" class="filter-field">
+              <mat-label>Filter</mat-label>
+              <mat-select [(ngModel)]="historyFilter">
+                <mat-option value="all">All Trades</mat-option>
+                <mat-option value="today">Today</mat-option>
+                <mat-option value="week">This Week</mat-option>
+                <mat-option value="month">This Month</mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+        </div>
+
+        <div class="history-content" *ngIf="filteredTradesHistory.length > 0; else noTrades">
+          <div class="trades-table">
+            <div class="table-header">
+              <div class="col-time">Time</div>
+              <div class="col-symbol">Symbol</div>
+              <div class="col-side">Side</div>
+              <div class="col-quantity">Quantity</div>
+              <div class="col-price">Price</div>
+              <div class="col-total">Total</div>
+              <div class="col-status">Status</div>
+            </div>
+            
+            <div class="table-body">
+              <div class="trade-row" *ngFor="let trade of filteredTradesHistory">
+                <div class="col-time">
+                  <span class="time">{{ trade.time | date:'short' }}</span>
+                </div>
+                <div class="col-symbol">
+                  <span class="symbol">{{ trade.symbol }}</span>
+                </div>
+                <div class="col-side">
+                  <mat-chip [ngClass]="trade.side" class="side-chip">
+                    {{ trade.side | uppercase }}
+                  </mat-chip>
+                </div>
+                <div class="col-quantity">{{ trade.quantity }}</div>
+                <div class="col-price">${{ trade.price | number:'1.2-2' }}</div>
+                <div class="col-total">${{ trade.total | number:'1.2-2' }}</div>
+                <div class="col-status">
+                  <mat-chip class="status-chip" [ngClass]="trade.status">
+                    {{ trade.status }}
+                  </mat-chip>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <ng-template #noTrades>
+          <div class="empty-state">
+            <mat-icon>receipt_long</mat-icon>
+            <p>No trades yet</p>
+            <span>Your trade history will appear here</span>
+          </div>
+        </ng-template>
+      </mat-card>
+    </div>
+  </div>
+
+  <!-- Performance Analytics -->
+  <div class="analytics-section">
+    <mat-card class="analytics-card">
+      <div class="card-header">
+        <mat-icon class="header-icon">insights</mat-icon>
+        <h3>Performance Analytics</h3>
+        <div class="time-range-selector">
+          <mat-button-toggle-group [(ngModel)]="analyticsTimeRange">
+            <mat-button-toggle value="1D">1D</mat-button-toggle>
+            <mat-button-toggle value="1W">1W</mat-button-toggle>
+            <mat-button-toggle value="1M">1M</mat-button-toggle>
+            <mat-button-toggle value="3M">3M</mat-button-toggle>
+          </mat-button-toggle-group>
+        </div>
+      </div>
+
+      <div class="analytics-content">
+        <div class="metrics-grid">
+          <div class="metric-card">
+            <div class="metric-header">
+              <mat-icon>trending_up</mat-icon>
+              <span class="metric-label">Win Rate</span>
+            </div>
+            <div class="metric-value">{{ winRate | number:'1.1-1' }}%</div>
+            <div class="metric-change positive">+2.3% from last week</div>
+          </div>
+
+          <div class="metric-card">
+            <div class="metric-header">
+              <mat-icon>account_balance</mat-icon>
+              <span class="metric-label">Total Return</span>
+            </div>
+            <div class="metric-value" [ngClass]="totalReturn >= 0 ? 'positive' : 'negative'">
+              {{ totalReturn >= 0 ? '+' : '' }}{{ totalReturn | number:'1.2-2' }}%
+            </div>
+            <div class="metric-change" [ngClass]="totalReturn >= 0 ? 'positive' : 'negative'">
+              {{ totalReturn >= 0 ? '+' : '' }}${{ totalReturnAmount | number:'1.2-2' }}
+            </div>
+          </div>
+
+          <div class="metric-card">
+            <div class="metric-header">
+              <mat-icon>compare_arrows</mat-icon>
+              <span class="metric-label">Avg Trade</span>
+            </div>
+            <div class="metric-value">${{ avgTradeSize | number:'1.2-2' }}</div>
+            <div class="metric-change">{{ totalTrades }} total trades</div>
+          </div>
+
+          <div class="metric-card">
+            <div class="metric-header">
+              <mat-icon>timeline</mat-icon>
+              <span class="metric-label">Sharpe Ratio</span>
+            </div>
+            <div class="metric-value">{{ sharpeRatio | number:'1.2-2' }}</div>
+            <div class="metric-change positive">Excellent</div>
+          </div>
+        </div>
+      </div>
+    </mat-card>
+  </div>
+</div>
+

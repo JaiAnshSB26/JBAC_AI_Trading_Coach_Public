@@ -1,0 +1,330 @@
+.portfolio-selector {
+  padding: 20px;
+  background: linear-gradient(135deg, #161b22 0%, #1c2128 100%);
+  border: 1px solid rgba(48, 54, 61, 0.5);
+  border-radius: 16px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+
+    h2 {
+      margin: 0;
+      font-size: 24px;
+      font-weight: 700;
+      background: linear-gradient(135deg, #00d084 0%, #2196f3 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .create-btn {
+      padding: 10px 20px;
+      background: linear-gradient(135deg, #00d084 0%, #2196f3 100%);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+
+      &:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0, 208, 132, 0.4);
+      }
+    }
+  }
+
+  .loading {
+    text-align: center;
+    padding: 60px 20px;
+
+    .spinner {
+      width: 40px;
+      height: 40px;
+      margin: 0 auto 16px;
+      border: 4px solid rgba(48, 54, 61, 0.5);
+      border-top-color: #00d084;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+
+    p {
+      color: #8b949e;
+      font-size: 14px;
+    }
+  }
+
+  .create-form {
+    background: rgba(48, 54, 61, 0.3);
+    border: 2px dashed rgba(0, 208, 132, 0.3);
+    border-radius: 12px;
+    padding: 24px;
+    margin-bottom: 24px;
+
+    h3 {
+      margin: 0 0 20px 0;
+      font-size: 18px;
+      font-weight: 600;
+      color: #e6edf3;
+    }
+
+    .form-group {
+      margin-bottom: 16px;
+
+      label {
+        display: block;
+        font-size: 13px;
+        font-weight: 600;
+        color: #e6edf3;
+        margin-bottom: 6px;
+      }
+
+      input {
+        width: 100%;
+        padding: 10px 12px;
+        background: rgba(48, 54, 61, 0.5);
+        border: 2px solid rgba(48, 54, 61, 0.8);
+        border-radius: 6px;
+        font-size: 14px;
+        color: #e6edf3;
+        box-sizing: border-box;
+
+        &:focus {
+          outline: none;
+          border-color: #00d084;
+          background: rgba(48, 54, 61, 0.7);
+        }
+
+        &::placeholder {
+          color: #6e7681;
+        }
+      }
+
+      small {
+        display: block;
+        margin-top: 4px;
+        font-size: 12px;
+        color: #8b949e;
+      }
+    }
+
+    .form-actions {
+      display: flex;
+      gap: 12px;
+      margin-top: 20px;
+
+      button {
+        flex: 1;
+        padding: 10px;
+        border: none;
+        border-radius: 6px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s;
+      }
+
+      .cancel-btn {
+        background: rgba(48, 54, 61, 0.5);
+        border: 2px solid rgba(48, 54, 61, 0.8);
+        color: #e6edf3;
+
+        &:hover {
+          background: rgba(48, 54, 61, 0.7);
+          border-color: #8b949e;
+        }
+      }
+
+      .submit-btn {
+        background: linear-gradient(135deg, #00d084 0%, #2196f3 100%);
+        color: white;
+
+        &:hover {
+          transform: translateY(-1px);
+          box-shadow: 0 4px 12px rgba(0, 208, 132, 0.4);
+        }
+      }
+    }
+  }
+
+  .portfolios-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+  }
+
+  .portfolio-card {
+    background: rgba(48, 54, 61, 0.3);
+    border: 2px solid rgba(48, 54, 61, 0.5);
+    border-radius: 12px;
+    padding: 20px;
+    cursor: pointer;
+    transition: all 0.2s;
+    position: relative;
+
+    &:hover {
+      border-color: #00d084;
+      box-shadow: 0 4px 12px rgba(0, 208, 132, 0.3);
+      transform: translateY(-2px);
+    }
+
+    &.active {
+      border-color: #00d084;
+      background: rgba(0, 208, 132, 0.1);
+      box-shadow: 0 0 20px rgba(0, 208, 132, 0.2);
+    }
+
+    .portfolio-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 16px;
+
+      h3 {
+        margin: 0;
+        font-size: 18px;
+        font-weight: 700;
+        color: #e6edf3;
+        flex: 1;
+      }
+
+      .delete-btn {
+        background: rgba(248, 81, 73, 0.2);
+        color: #f85149;
+        border: none;
+        width: 28px;
+        height: 28px;
+        border-radius: 50%;
+        font-size: 24px;
+        line-height: 1;
+        cursor: pointer;
+        transition: all 0.2s;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        &:hover {
+          background: #f85149;
+          color: white;
+        }
+      }
+    }
+
+    .portfolio-stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin-bottom: 16px;
+
+      .stat {
+        label {
+          display: block;
+          font-size: 11px;
+          color: #8b949e;
+          text-transform: uppercase;
+          letter-spacing: 0.5px;
+          margin-bottom: 4px;
+        }
+
+        .value {
+          display: block;
+          font-size: 14px;
+          font-weight: 700;
+          color: #e6edf3;
+        }
+      }
+    }
+
+    .tracked-symbols {
+      padding-top: 12px;
+      border-top: 1px solid rgba(48, 54, 61, 0.5);
+
+      label {
+        display: block;
+        font-size: 11px;
+        color: #8b949e;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        margin-bottom: 8px;
+      }
+
+      .symbols {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+
+        .symbol-tag {
+          padding: 4px 8px;
+          background: rgba(33, 150, 243, 0.15);
+          border: 1px solid rgba(33, 150, 243, 0.3);
+          border-radius: 4px;
+          font-size: 11px;
+          font-weight: 600;
+          color: #2196f3;
+        }
+      }
+    }
+
+    .active-badge {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      padding: 4px 12px;
+      background: #00d084;
+      color: white;
+      border-radius: 12px;
+      font-size: 11px;
+      font-weight: 700;
+    }
+  }
+
+  .empty-state {
+    text-align: center;
+    padding: 60px 20px;
+    grid-column: 1 / -1;
+
+    .icon {
+      font-size: 64px;
+      margin-bottom: 16px;
+    }
+
+    h3 {
+      margin: 0 0 8px 0;
+      font-size: 20px;
+      font-weight: 700;
+      color: #e6edf3;
+    }
+
+    p {
+      margin: 0 0 24px 0;
+      color: #8b949e;
+      font-size: 14px;
+    }
+
+    .create-btn-large {
+      padding: 12px 32px;
+      background: linear-gradient(135deg, #00d084 0%, #2196f3 100%);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+
+      &:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(0, 208, 132, 0.4);
+      }
+    }
+  }
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}

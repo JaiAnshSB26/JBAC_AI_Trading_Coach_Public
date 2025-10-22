@@ -1,0 +1,15 @@
+# Minimal Lambda requirements (no compiled packages with compatibility issues)
+fastapi==0.111.0
+mangum==0.17.0
+boto3==1.34.155
+python-dotenv==1.0.1
+requests==2.32.3
+PyJWT==2.8.0
+
+# These will be installed but might have issues - Lambda will use fallbacks
+# pydantic==2.8.2
+# bcrypt==4.1.2
+# google-auth==2.16.0
+# yfinance==0.2.66
+# pandas==2.2.2
+# numpy==1.26.4

@@ -1,0 +1,170 @@
+<div class="dashboard-container">
+  
+  <!-- Hero Header -->
+  <div class="hero-section">
+    <div class="hero-content">
+      <h1 class="hero-title">
+        <span class="gradient-text">AI Trading Intelligence</span>
+      </h1>
+      <p class="hero-subtitle">Your Personal Trading Assistant Powered by Advanced AI</p>
+      <div class="hero-time">{{ currentTime }}</div>
+    </div>
+  </div>
+
+  <!-- Portfolio Selector -->
+  <div class="portfolio-section">
+    <app-portfolio-selector></app-portfolio-selector>
+  </div>
+
+  <!-- Main Features -->
+  <div class="features-section">
+    <h2 class="section-title">Get Started</h2>
+    <div class="features-grid">
+      <div class="feature-card" *ngFor="let feature of features" [routerLink]="feature.route">
+        <div class="feature-background" [style.background]="feature.color"></div>
+        <mat-icon class="feature-icon">{{ feature.icon }}</mat-icon>
+        <h3>{{ feature.title }}</h3>
+        <p>{{ feature.description }}</p>
+        <button mat-button class="feature-button">
+          Explore
+          <mat-icon>arrow_forward</mat-icon>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Trading Tips -->
+  <div class="tips-section">
+    <div class="tips-container">
+      <div class="tips-column do-column">
+        <h2 class="tips-title">
+          <mat-icon>check_circle</mat-icon>
+          Do This
+        </h2>
+        <div class="tip-item">
+          <mat-icon>done</mat-icon>
+          <span>Always use stop-loss orders to manage risk</span>
+        </div>
+        <div class="tip-item">
+          <mat-icon>done</mat-icon>
+          <span>Diversify your portfolio across sectors</span>
+        </div>
+        <div class="tip-item">
+          <mat-icon>done</mat-icon>
+          <span>Research thoroughly before investing</span>
+        </div>
+        <div class="tip-item">
+          <mat-icon>done</mat-icon>
+          <span>Keep emotions out of trading decisions</span>
+        </div>
+        <div class="tip-item">
+          <mat-icon>done</mat-icon>
+          <span>Review and learn from your trades</span>
+        </div>
+      </div>
+
+      <div class="tips-column avoid-column">
+        <h2 class="tips-title">
+          <mat-icon>cancel</mat-icon>
+          Avoid This
+        </h2>
+        <div class="tip-item">
+          <mat-icon>close</mat-icon>
+          <span>Don't chase losses with emotional trades</span>
+        </div>
+        <div class="tip-item">
+          <mat-icon>close</mat-icon>
+          <span>Avoid trading on tips without research</span>
+        </div>
+        <div class="tip-item">
+          <mat-icon>close</mat-icon>
+          <span>Don't risk more than you can afford</span>
+        </div>
+        <div class="tip-item">
+          <mat-icon>close</mat-icon>
+          <span>Never ignore market trends and signals</span>
+        </div>
+        <div class="tip-item">
+          <mat-icon>close</mat-icon>
+          <span>Don't overtrade or trade too frequently</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- AI Agents Overview -->
+  <div class="agents-section">
+    <h2 class="section-title">AI Agent System</h2>
+    <p class="section-description">Our coordinated multi-agent system works together to provide you with comprehensive trading intelligence</p>
+    <div class="agents-grid">
+      <div class="agent-card">
+        <div class="agent-header" style="background: linear-gradient(135deg, #667eea, #764ba2);">
+          <mat-icon>route</mat-icon>
+        </div>
+        <h3>Planner Agent</h3>
+        <p class="agent-description">
+          The Planner analyzes real-time market data, technical indicators (RSI, MACD, EMA), and historical patterns. 
+          It identifies trading opportunities by evaluating price trends, volume patterns, and momentum signals. 
+          The Planner creates structured trading plans with entry points, target prices, and risk assessments.
+        </p>
+        <div class="agent-capabilities">
+          <div class="capability-tag">Market Analysis</div>
+          <div class="capability-tag">Pattern Recognition</div>
+          <div class="capability-tag">Technical Indicators</div>
+        </div>
+      </div>
+      
+      <div class="agent-card">
+        <div class="agent-header" style="background: linear-gradient(135deg, #f093fb, #f5576c);">
+          <mat-icon>rate_review</mat-icon>
+        </div>
+        <h3>Critic Agent</h3>
+        <p class="agent-description">
+          The Critic acts as a risk management specialist, rigorously evaluating the Planner's recommendations. 
+          It validates trading signals against market conditions, checks for potential pitfalls, and assesses 
+          risk-reward ratios. The Critic ensures every recommendation meets strict quality and safety standards.
+        </p>
+        <div class="agent-capabilities">
+          <div class="capability-tag">Risk Assessment</div>
+          <div class="capability-tag">Signal Validation</div>
+          <div class="capability-tag">Quality Control</div>
+        </div>
+      </div>
+      
+      <div class="agent-card">
+        <div class="agent-header" style="background: linear-gradient(135deg, #4facfe, #00f2fe);">
+          <mat-icon>check_circle</mat-icon>
+        </div>
+        <h3>Synthesizer Agent</h3>
+        <p class="agent-description">
+          The Synthesizer takes insights from both Planner and Critic, distilling complex analysis into clear, 
+          actionable recommendations. It weighs conflicting opinions, highlights key points, and presents a 
+          unified verdict (BUY, SELL, HOLD, WAIT) with supporting rationale in plain language.
+        </p>
+        <div class="agent-capabilities">
+          <div class="capability-tag">Decision Synthesis</div>
+          <div class="capability-tag">Clear Communication</div>
+          <div class="capability-tag">Actionable Insights</div>
+        </div>
+      </div>
+      
+      <div class="agent-card">
+        <div class="agent-header" style="background: linear-gradient(135deg, #43e97b, #38f9d7);">
+          <mat-icon>school</mat-icon>
+        </div>
+        <h3>Coach Agent</h3>
+        <p class="agent-description">
+          The Coach provides educational support and answers your trading questions. It explains complex concepts 
+          in simple terms, helps you understand market dynamics, and guides you through trading strategies. 
+          Think of it as your personal trading mentor available 24/7.
+        </p>
+        <div class="agent-capabilities">
+          <div class="capability-tag">Education</div>
+          <div class="capability-tag">Q&A Support</div>
+          <div class="capability-tag">Strategy Guidance</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>

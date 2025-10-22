@@ -1,0 +1,23 @@
+#Python 3.10+ (3.10 - 3.12 best)
+fastapi==0.111.0
+uvicorn[standard]==0.30.0
+pydantic==2.8.2
+pydantic-settings==2.3.4
+boto3==1.34.155
+
+# AWS Lambda adapter for FastAPI
+mangum==0.17.0
+
+# Market Data Providers
+alpha-vantage==2.3.1
+yfinance==0.2.66
+
+pandas==2.2.2
+numpy==1.26.4
+ta==0.11.0
+python-dotenv==1.0.1
+requests==2.32.3
+# streamlit==1.37.1  # Not needed for Lambda - only for local UI
+bcrypt==4.1.2
+PyJWT==2.8.0
+google-auth==2.16.0 

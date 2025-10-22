@@ -1,0 +1,76 @@
+# Files and directories to exclude from Lambda deployment package
+
+# Environment files (use Lambda environment variables instead)
+.env
+.env.*
+*.env
+
+# Git files
+.git/
+.gitignore
+.gitattributes
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+
+# Virtual environments
+venv/
+env/
+ENV/
+markets/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Documentation
+*.md
+README*
+CHANGELOG*
+LICENSE*
+docs/
+
+# Tests
+tests/
+test_*.py
+*_test.py
+pytest.ini
+.pytest_cache/
+
+# Build artifacts
+build/
+dist/
+*.egg-info/
+lambda_package/
+lambda_function.zip
+
+# UI files (deployed separately)
+ui/
+node_modules/
+package*.json
+angular.json
+tsconfig*.json
+*.scss
+
+# Scripts (not needed in Lambda)
+scripts/
+deploy_*.sh
+deploy_*.ps1
+fix-after-pull.ps1
+
+# Infrastructure files
+infra/
+docker/
+
+# Development files
+llm.txt
+todo.txt
+next_steps.txt
+implementation.txt

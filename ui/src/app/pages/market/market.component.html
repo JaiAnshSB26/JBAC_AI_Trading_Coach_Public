@@ -1,0 +1,69 @@
+<div class="market-container">
+  <div class="market-header">
+    <h1 class="market-title">
+      <mat-icon class="title-icon">trending_up</mat-icon>
+      Market Watch
+    </h1>
+    <button mat-raised-button color="primary" class="refresh-btn" (click)="refreshData()" [disabled]="loading">
+      <mat-icon>refresh</mat-icon>
+      {{ loading ? 'Refreshing...' : 'Refresh' }}
+    </button>
+  </div>
+
+  <!-- Symbol Cards Grid -->
+  <div class="market-grid">
+    <!-- Existing Symbol Cards -->
+    <mat-card *ngFor="let item of marketHighlights; let i = index" 
+              class="market-card" 
+              [class.positive]="item.change.includes('+')"
+              [class.negative]="item.change.includes('-')"
+              [style.animation-delay.ms]="i * 100">
+      <button mat-icon-button class="remove-btn" (click)="removeSymbol(item.symbol)" *ngIf="canRemoveSymbol()">
+        <mat-icon>close</mat-icon>
+      </button>
+      
+      <div class="card-header">
+        <div class="asset-info">
+          <mat-icon [style.color]="item.color" class="asset-icon">{{ item.icon }}</mat-icon>
+          <div>
+            <h3 class="symbol">{{ item.symbol }}</h3>
+            <p class="asset-name">{{ item.name }}</p>
+          </div>
+        </div>
+      </div>
+      
+      <div class="price-section">
+        <p class="current-price">${{ item.price }}</p>
+        <div class="change-info">
+          <span class="change-value" [style.color]="item.change.includes('+') ? '#00E676' : '#FF5252'">
+            {{ item.change }}
+          </span>
+          <mat-icon class="trend-icon" [style.color]="item.change.includes('+') ? '#00E676' : '#FF5252'">
+            {{ item.change.includes('+') ? 'trending_up' : 'trending_down' }}
+          </mat-icon>
+        </div>
+      </div>
+
+      <div class="mini-chart">
+        <div class="chart-placeholder" [style.background]="item.chartGradient">
+          <span class="chart-text">24h</span>
+        </div>
+      </div>
+    </mat-card>
+
+    <!-- Add New Symbol Card -->
+    <mat-card class="market-card add-card" (click)="openAddSymbolDialog()">
+      <div class="add-content">
+        <mat-icon class="add-icon">add_circle</mat-icon>
+        <h3>Add Symbol</h3>
+        <p>Track a new asset</p>
+      </div>
+    </mat-card>
+  </div>
+
+  <!-- Loading Spinner -->
+  <div *ngIf="loading" class="loading-overlay">
+    <mat-spinner diameter="60"></mat-spinner>
+    <p>Updating market data...</p>
+  </div>
+</div>

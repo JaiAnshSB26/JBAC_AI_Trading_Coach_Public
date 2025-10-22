@@ -1,0 +1,94 @@
+<div class="dialog-container">
+  <!-- Header with gradient background -->
+  <div class="dialog-header">
+    <div class="icon-wrapper">
+      <mat-icon>add_circle</mat-icon>
+    </div>
+    <h2 class="dialog-title">Add New Symbol</h2>
+    <p class="dialog-subtitle">Track a new stock or cryptocurrency</p>
+  </div>
+
+  <mat-dialog-content class="dialog-content">
+    <form class="symbol-form">
+      <!-- Symbol Input -->
+      <div class="input-group">
+        <label class="input-label">
+          <mat-icon>search</mat-icon>
+          Symbol
+        </label>
+        <mat-form-field appearance="outline" class="modern-input">
+          <input matInput
+                 placeholder="e.g., AAPL, BTC-USD, ETH-USD"
+                 [(ngModel)]="symbol"
+                 name="symbol"
+                 (input)="onSymbolInput()"
+                 autocomplete="off"
+                 required>
+        </mat-form-field>
+        <div class="input-hint">
+          <mat-icon>info</mat-icon>
+          Enter a stock ticker (AAPL, MSFT) or crypto pair (BTC-USD)
+        </div>
+      </div>
+
+      <!-- Display Name Input -->
+      <div class="input-group">
+        <label class="input-label">
+          <mat-icon>label</mat-icon>
+          Display Name <span class="optional">(Optional)</span>
+        </label>
+        <mat-form-field appearance="outline" class="modern-input">
+          <input matInput
+                 placeholder="e.g., Apple Inc."
+                 [(ngModel)]="displayName"
+                 name="displayName"
+                 autocomplete="off">
+        </mat-form-field>
+        <div class="input-hint">
+          <mat-icon>lightbulb</mat-icon>
+          Leave blank to use the symbol as the name
+        </div>
+      </div>
+
+      <!-- Popular Suggestions -->
+      <div class="suggestions-section" *ngIf="!symbol">
+        <div class="suggestions-title">Popular Symbols</div>
+        <div class="suggestion-chips">
+          <button mat-stroked-button class="suggestion-chip" (click)="selectSuggestion('AAPL', 'Apple Inc.')">
+            <mat-icon>trending_up</mat-icon>
+            AAPL
+          </button>
+          <button mat-stroked-button class="suggestion-chip" (click)="selectSuggestion('MSFT', 'Microsoft')">
+            <mat-icon>trending_up</mat-icon>
+            MSFT
+          </button>
+          <button mat-stroked-button class="suggestion-chip" (click)="selectSuggestion('GOOGL', 'Google')">
+            <mat-icon>trending_up</mat-icon>
+            GOOGL
+          </button>
+          <button mat-stroked-button class="suggestion-chip" (click)="selectSuggestion('BTC-USD', 'Bitcoin')">
+            <mat-icon>currency_bitcoin</mat-icon>
+            BTC-USD
+          </button>
+          <button mat-stroked-button class="suggestion-chip" (click)="selectSuggestion('ETH-USD', 'Ethereum')">
+            <mat-icon>currency_exchange</mat-icon>
+            ETH-USD
+          </button>
+        </div>
+      </div>
+    </form>
+  </mat-dialog-content>
+
+  <mat-dialog-actions class="dialog-actions">
+    <button mat-stroked-button class="cancel-btn" mat-dialog-close>
+      <mat-icon>close</mat-icon>
+      Cancel
+    </button>
+    <button mat-flat-button class="add-btn"
+            (click)="addSymbol()"
+            [disabled]="!symbol || !symbol.trim()">
+      <mat-icon>add</mat-icon>
+      Add Symbol
+    </button>
+  </mat-dialog-actions>
+</div>
